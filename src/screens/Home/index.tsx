@@ -30,24 +30,28 @@ export function Home() {
 
   async function loadData() {
     const dataKey = '@savepass:logins';
-    const storedData = JSON.parse(await AsyncStorage.getItem(dataKey));
-    setData(storedData);
-    setSearchListData(storedData);
-    // Get asyncStorage data, use setSearchListData and setData
+    const storedData = await AsyncStorage.getItem(dataKey);
+
+    const parsedData = JSON.parse(storedData);
+
+    setData(parsedData);
+    setSearchListData(parsedData);
   }
 
   function handleFilterLoginData() {
-    // Filter results inside data, save with setSearchListData
     if (searchText !== '') {
       const filteredData = data.filter((dt) =>
-        dt.service_name.includes(searchText)
+        dt.service_name.toLowerCase().includes(searchText.toLowerCase())
       );
       setSearchListData(filteredData);
     }
   }
 
   function handleChangeInputText(text: string) {
-    // Update searchText value
+    if (!text) {
+      setSearchListData(data);
+    }
+
     setSearchText(text);
   }
 
